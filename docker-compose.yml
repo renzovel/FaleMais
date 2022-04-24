@@ -24,7 +24,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-      MYSQL_DATABASE: falemais
+      MYSQL_DATABASE: falemaisdb
     volumes:
       - ./Docker/mysql/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf
       - ./Docker/mysql/data:/var/lib/mysql:rw
