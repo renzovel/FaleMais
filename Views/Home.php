@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,6 +14,7 @@
     src="https://code.jquery.com/jquery-2.2.4.min.js"
     integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
     crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <title>Telzi (Planos)</title>
     <style type="text/css">
         .nav-wrapper{
@@ -26,6 +29,11 @@
             padding:0px; 
             margin:0px;
         }
+        .btn-large{
+            width: 100%;
+        }
+
+
         @media only screen and (max-width: 992px){
             nav .brand-logo{
                 left: auto; 
@@ -59,38 +67,59 @@
 
     <section>
         <div class="container">
-            <div class="row">
-                <div class="col s2">
-                </div>
-                <div class="col s8">
-                <blockquote>
-                    Calcule o valor da sua chamada para os planos "Fale Mais" com esta nova ferramenta Telzi.
-                </blockquote>
-                <hr>
+            <form action="#">
                 <div class="row">
-                    <div class="input-field col s6">
-                        <select>
-                        <option value="">--Selecione a origem--</option>
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                        </select>
-                        <label>DDD de origem:</label>
-                    </div> 
-                    <div class="input-field col s6">
-                        <select>
-                        <option value="">--Selecione o destino--</option>
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                        </select>
-                        <label>DDD de destino:</label>
+                    <div class="col s2">
+                    </div>
+                    <div class="col s8">
+                    <blockquote>
+                        Calcule o valor da sua chamada para os planos "Fale Mais" com esta nova ferramenta Telzi.
+                    </blockquote>
+                    <hr>
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <select required>
+                                <option value="">--Selecione a origem--</option>
+                            </select>
+                            <label>DDD de origem:</label>
+                        </div> 
+                        <div class="input-field col s12 m6">
+                            <select disabled required>
+                                <option value="">--Selecione o destino--</option>
+                            </select>
+                            <label>DDD de destino:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="minutos" type="number" name="minutos" required>
+                            <label for="minutos">Minutos da ligacao:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select>
+                                <option value="">--Selecione a plano Fale Mais--</option>
+                            </select>
+                            <label>Planos Fale Mais:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">                            
+                            <button class="btn btn-large waves-effect waves-light" type="submit" disabled>
+                                Calcular Valor
+                                <i class="material-icons right">send</i>
+                            </button>
+                            <div class="progress">
+                                <div class="indeterminate"></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col s2">                    
                     </div>
                 </div>
-                </div>
-                <div class="col s2">                    
-                </div>
-            </div>
+            </form>
         </div>
     </section>
     
