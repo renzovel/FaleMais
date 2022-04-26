@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Tempo de geração: 24/04/2022 às 20:31
+-- Tempo de geração: 26/04/2022 às 19:21
 -- Versão do servidor: 5.7.37
 -- Versão do PHP: 8.0.15
 
@@ -20,8 +20,18 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `falemaisdb`
 --
-CREATE DATABASE IF NOT EXISTS `falemaisdb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `falemaisdb`;
+
+DELIMITER $$
+--
+-- Procedimentos
+--
+CREATE DEFINER=`root`@`%` PROCEDURE `getDiscagem` (IN `p_id` INT)   IF p_id = 0 THEN
+	SELECT * FROM discagem;
+ELSE
+	SELECT * FROM discagem WHERE iddiscagem=p_id;
+END IF$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -58,6 +68,7 @@ CREATE TABLE `planos` (
   `name` varchar(100) NOT NULL,
   `minutos` int(11) NOT NULL,
   `porcacrecimo` int(11) NOT NULL COMMENT 'porcentagem de acessimo',
+  `valor` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT 'valor do plano',
   `datareg` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datamod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -66,10 +77,10 @@ CREATE TABLE `planos` (
 -- Despejando dados para a tabela `planos`
 --
 
-INSERT INTO `planos` (`idplanos`, `name`, `minutos`, `porcacrecimo`, `datareg`, `datamod`) VALUES
-(1, 'FaleMais 30 (30 minutos)', 30, 10, '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
-(2, 'FaleMais 60 (60 minutos)', 60, 10, '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
-(3, 'FaleMais 120 (120 minutos)', 120, 10, '2022-04-24 20:30:56', '2022-04-24 20:30:56');
+INSERT INTO `planos` (`idplanos`, `name`, `minutos`, `porcacrecimo`, `valor`, `datareg`, `datamod`) VALUES
+(1, 'FaleMais 30 (30 minutos)', 30, 10, '20.00', '2022-04-24 20:30:56', '2022-04-26 19:21:09'),
+(2, 'FaleMais 60 (60 minutos)', 60, 10, '25.00', '2022-04-24 20:30:56', '2022-04-26 19:21:15'),
+(3, 'FaleMais 120 (120 minutos)', 120, 10, '30.00', '2022-04-24 20:30:56', '2022-04-26 19:21:28');
 
 -- --------------------------------------------------------
 
