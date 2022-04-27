@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Tempo de geração: 26/04/2022 às 19:21
+-- Tempo de geração: 27/04/2022 às 18:55
 -- Versão do servidor: 5.7.37
 -- Versão do PHP: 8.0.15
 
@@ -25,11 +25,52 @@ DELIMITER $$
 --
 -- Procedimentos
 --
-CREATE DEFINER=`root`@`%` PROCEDURE `getDiscagem` (IN `p_id` INT)   IF p_id = 0 THEN
+CREATE DEFINER=`root`@`%` PROCEDURE `getDiscagemDestino` (IN `p_origem` INT)   SELECT DD.* FROM discagem AS DO 
+INNER JOIN tarifas AS TA ON DO.iddiscagem=TA.idorigem
+INNER JOIN discagem AS DD ON TA.iddestino=DD.iddiscagem
+WHERE DO.iddiscagem=p_origem$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `getDiscagemOrigem` (IN `p_id` INT)   IF p_id = 0 THEN
 	SELECT * FROM discagem;
 ELSE
 	SELECT * FROM discagem WHERE iddiscagem=p_id;
 END IF$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `getPlanos` (IN `p_idPlano` INT)   IF p_idPlano>0 THEN
+SELECT * FROM planos WHERE idplanos=p_plano;
+ELSE
+SELECT * FROM planos;
+END IF$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `getTarifasCalcular` (IN `p_origem` INT, IN `p_destino` INT, IN `p_plano` INT, IN `p_minutos` INT)   SELECT
+	CONCAT(DO.ddd,'   (',DO.regiao,'-',DO.uf,')') AS origen,
+    CONCAT(DD.ddd,'   (',DD.regiao,'-',DD.uf,')') AS destino,
+    TA.valorminuto,
+    PLA.name,
+(
+        CASE
+            WHEN p_minutos > 0 THEN p_minutos * TA.valorminuto
+            ELSE 0.00
+        END
+    ) AS semfalemais,
+    (
+        CASE
+            WHEN PLA.minutos IS NOT NULL THEN CASE
+                WHEN (p_minutos - PLA.minutos) > 0 THEN 
+        			CAST(((p_minutos - PLA.minutos) * TA.valorminuto) +(
+                    ((p_minutos - PLA.minutos) * TA.valorminuto) * PLA.porcacrecimo
+                ) / 100 AS DECIMAL(5,2))
+                ELSE 0.00
+            END
+            ELSE p_minutos * TA.valorminuto
+        END
+    ) AS comfalemais    
+FROM discagem AS DO
+    INNER JOIN tarifas AS TA ON DO.iddiscagem = TA.idorigem
+    INNER JOIN discagem AS DD ON TA.iddestino = DD.iddiscagem
+    LEFT JOIN planos AS PLA ON PLA.idplanos = p_plano
+WHERE TA.idorigem = p_origem
+    AND TA.iddestino = p_destino$$
 
 DELIMITER ;
 
@@ -43,6 +84,8 @@ CREATE TABLE `discagem` (
   `iddiscagem` int(11) NOT NULL,
   `ddd` varchar(5) NOT NULL,
   `type` int(11) NOT NULL DEFAULT '1' COMMENT '1 - Nacionais, 2 Internacionais',
+  `regiao` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT 'São Paulo',
+  `uf` varchar(5) NOT NULL DEFAULT 'SP',
   `datareg` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datamod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -51,11 +94,11 @@ CREATE TABLE `discagem` (
 -- Despejando dados para a tabela `discagem`
 --
 
-INSERT INTO `discagem` (`iddiscagem`, `ddd`, `type`, `datareg`, `datamod`) VALUES
-(1, '011', 1, '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
-(2, '016', 1, '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
-(3, '017', 1, '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
-(4, '018', 1, '2022-04-24 20:30:56', '2022-04-24 20:30:56');
+INSERT INTO `discagem` (`iddiscagem`, `ddd`, `type`, `regiao`, `uf`, `datareg`, `datamod`) VALUES
+(1, '011', 1, 'São Paulo', 'SP', '2022-04-24 20:30:56', '2022-04-27 00:14:22'),
+(2, '016', 1, 'São Paulo', 'SP', '2022-04-24 20:30:56', '2022-04-27 00:14:26'),
+(3, '017', 1, 'São Paulo', 'SP', '2022-04-24 20:30:56', '2022-04-27 00:14:29'),
+(4, '018', 1, 'São Paulo', 'SP', '2022-04-24 20:30:56', '2022-04-27 00:14:32');
 
 -- --------------------------------------------------------
 
