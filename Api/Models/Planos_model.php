@@ -3,7 +3,7 @@ namespace Api\Models;
 use Api\DB\Conection as DB;
 class  Planos{
 
-    protected $table='Discagem';
+    protected $table='Planos';
 
     public function Planos(int $idPlano=0){
         try {
