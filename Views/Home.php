@@ -3,7 +3,13 @@
     //consultamos nossa propria API
     $req=file_get_contents(localURL."/Api/Discagem");
     //recebemos os Discagem
-    $res=json_decode($req);
+    $discagem=json_decode($req);
+
+    //consultamos os planos
+    $req=file_get_contents(localURL."/Api/Planos");
+    //recebemos os planos
+    $planos=json_decode($req);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -37,7 +43,7 @@
         .btn-large{
             width: 100%;
         }
-        .load-destino{
+        .load-destino, .load-require{
             display: none;
         }
 
@@ -88,7 +94,7 @@
                         <div class="input-field col s12 m6">
                             <select id="origem" name="origem">
                                 <option value="">--Selecione a origem--</option>
-                                <?php foreach ($res->data as $row) { 
+                                <?php foreach ($discagem->data as $row) { 
                                 ?>
                                 <option value="<?=$row->iddiscagem?>"><?=$row->ddd?> &nbsp;&nbsp; (<?=$row->regiao?>-<?=$row->uf?>)</option>
                                 <?php }?>
@@ -115,6 +121,10 @@
                         <div class="input-field col s12">
                             <select id="plano" name="plano">
                                 <option value="">--Selecione a plano Fale Mais--</option>
+                                <?php foreach ($planos->data as $row) { 
+                                ?>
+                                <option value="<?=$row->idplanos?>"><?=$row->name?></option>
+                                <?php }?>
                             </select>
                             <label>Planos Fale Mais:</label>
                         </div>
@@ -125,7 +135,7 @@
                                 Calcular Valor
                                 <i class="material-icons right">send</i>
                             </button>
-                            <div class="progress">
+                            <div class="progress load-require">
                                 <div class="indeterminate"></div>
                             </div>
                         </div>
@@ -148,6 +158,8 @@
 
         $('form').on('submit',function(e){
             e.preventDefault();
+            $(".load-require").show();
+            $("#submit").attr('disabled', true);
         });
 
         $('#origem').on("change", function(){
