@@ -1,5 +1,10 @@
 
-
+<?php
+    //consultamos nossa propria API
+    $req=file_get_contents(localURL."/Api/Discagem");
+    //recebemos os Discagem
+    $res=json_decode($req);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -31,6 +36,9 @@
         }
         .btn-large{
             width: 100%;
+        }
+        .load-destino{
+            display: none;
         }
 
 
@@ -78,16 +86,23 @@
                     <hr>
                     <div class="row">
                         <div class="input-field col s12 m6">
-                            <select required>
+                            <select id="origem" name="origem">
                                 <option value="">--Selecione a origem--</option>
+                                <?php foreach ($res->data as $row) { 
+                                ?>
+                                <option value="<?=$row->iddiscagem?>"><?=$row->ddd?> &nbsp;&nbsp; (<?=$row->regiao?>-<?=$row->uf?>)</option>
+                                <?php }?>
                             </select>
                             <label>DDD de origem:</label>
                         </div> 
                         <div class="input-field col s12 m6">
-                            <select disabled required>
+                            <select id="destino" name="destino" disabled>
                                 <option value="">--Selecione o destino--</option>
                             </select>
                             <label>DDD de destino:</label>
+                            <div class="progress load-destino">
+                                <div class="indeterminate"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -98,7 +113,7 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <select>
+                            <select id="plano" name="plano">
                                 <option value="">--Selecione a plano Fale Mais--</option>
                             </select>
                             <label>Planos Fale Mais:</label>
@@ -106,7 +121,7 @@
                     </div>
                     <div class="row">
                         <div class="col s12">                            
-                            <button class="btn btn-large waves-effect waves-light" type="submit" disabled>
+                            <button id="submit" class="btn btn-large waves-effect waves-light" type="submit">
                                 Calcular Valor
                                 <i class="material-icons right">send</i>
                             </button>
@@ -128,7 +143,38 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
     $(document).ready(function(){
+        //carrega o form style da materialize
         $('select').formSelect();
+
+        $('form').on('submit',function(e){
+            e.preventDefault();
+        });
+
+        $('#origem').on("change", function(){
+            var origem=$(this).val();
+            if(origem!=""){
+                $('.load-destino').show();
+                $.get("<?=publicURL."/Api/Discagem/Destino/"?>"+origem, function(response, status){
+                    if(status=='success'){ 
+                        var options='<option value="">--Selecione o destino--</option>';
+                        $.each(JSON.parse(response).data, function(index, value){
+                            options+=`<option value="${value.iddiscagem}">${value.ddd}  &nbsp;&nbsp; (${value.regiao}-${value.uf})</option>`;                            
+                        });
+                        $("#destino").html(options);        
+                        $('.load-destino').hide();              
+                        $("#destino").removeAttr('disabled');
+                        $('select').formSelect();
+                    }else{
+                        console.log(status);
+                    }
+                });
+            }else{
+                $("#destino").val('').change();
+                $("#destino").attr('disabled', true);
+                $('select').formSelect();
+            }
+            
+        });
     });
 </script>
 </body>
