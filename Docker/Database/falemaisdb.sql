@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Tempo de geração: 27/04/2022 às 19:13
+-- Tempo de geração: 27/04/2022 às 22:02
 -- Versão do servidor: 5.7.37
 -- Versão do PHP: 8.0.15
 
@@ -43,7 +43,7 @@ SELECT * FROM planos;
 END IF$$
 
 CREATE DEFINER=`root`@`%` PROCEDURE `getTarifasCalcular` (IN `p_origem` INT, IN `p_destino` INT, IN `p_plano` INT, IN `p_minutos` INT)   SELECT
-	CONCAT(DO.ddd,'   (',DO.regiao,'-',DO.uf,')') AS origen,
+	CONCAT(DO.ddd,'   (',DO.regiao,'-',DO.uf,')') AS origem,
     CONCAT(DD.ddd,'   (',DD.regiao,'-',DD.uf,')') AS destino,
     TA.valorminuto,
     PLA.name,
@@ -150,7 +150,7 @@ INSERT INTO `tarifas` (`idtarifa`, `idorigem`, `iddestino`, `valorminuto`, `data
 (3, 1, 3, '1.70', '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
 (4, 3, 1, '2.70', '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
 (5, 1, 4, '0.90', '2022-04-24 20:30:56', '2022-04-24 20:30:56'),
-(6, 4, 2, '1.90', '2022-04-24 20:30:56', '2022-04-24 20:30:56');
+(6, 4, 1, '1.90', '2022-04-24 20:30:56', '2022-04-27 21:27:18');
 
 --
 -- Índices para tabelas despejadas
