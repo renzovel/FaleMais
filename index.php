@@ -10,7 +10,7 @@ if($_GET['url']!=null){
     }
     if($arrayUrl[0]==="Api"){
         include __DIR__.'/'.$arrayUrl[0].'/Models/'.$arrayUrl[1].'_model.php' ;
-        include __DIR__.'/'.$arrayUrl[0].'/Controllers/'.$arrayUrl[1].'_controlle.php' ;
+        include __DIR__.'/'.$arrayUrl[0].'/Controllers/'.$arrayUrl[1].'_controller.php' ;
         $newClass=$arrayUrl[1];
         try {
             $param=$arrayUrl[2]==null?[]:[$arrayUrl[2]];
