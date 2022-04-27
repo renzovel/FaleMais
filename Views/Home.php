@@ -43,11 +43,10 @@
         .btn-large{
             width: 100%;
         }
-        .load-destino, .load-require{
+        .load-destino, .load-require, #tcarculos{
             display: none;
         }
-
-
+        
         @media only screen and (max-width: 992px){
             nav .brand-logo{
                 left: auto; 
@@ -81,7 +80,7 @@
 
     <section>
         <div class="container">
-            <form action="#">
+            <form action="#" method="get">
                 <div class="row">
                     <div class="col s2">
                     </div>
@@ -144,6 +143,38 @@
                     <div class="col s2">                    
                     </div>
                 </div>
+                <div class="row">
+                    <table id="tcarculos" class="responsive-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Origem
+                                </th>
+                                <th>
+                                    Destino
+                                </th>
+                                <th>
+                                    Valor/Min
+                                </th>
+                                <th>
+                                    Tempo
+                                </th>
+                                <th>
+                                    Plano "Fale Mais"
+                                </th>                                
+                                <th>
+                                    Com "Fale Mais"
+                                </th>
+                                <th>
+                                    Sem "Fale Mais"
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
             </form>
         </div>
     </section>
@@ -159,7 +190,46 @@
         $('form').on('submit',function(e){
             e.preventDefault();
             $(".load-require").show();
+            $("#tcarculos").hide();
             $("#submit").attr('disabled', true);
+            var urlget='&idorigem='+$("#origem").val();
+            urlget+='&iddestino='+$("#destino").val();
+            urlget+='&minutos='+$("#minutos").val(); 
+            urlget+='&idplano='+$("#plano").val();           
+            $.get("<?=publicURL."/Api/Tarifas/Calcular/"?>"+urlget, function(response, status){
+                if(status=='success'){ 
+                    const data=JSON.parse(response).data[0];
+                    console.log(data);
+                    $(".load-require").hide();
+                    $("#submit").attr('disabled', false);
+                    $("#tcarculos>tbody").html(`
+                        <tr>
+                            <td>
+                                ${data.origem}
+                            </td>
+                            <td>
+                                ${data.destino}
+                            </td>
+                            <td>
+                               $ ${data.valorminuto}
+                            </td>
+                            <td>
+                                ${$("#minutos").val()}
+                            </td>
+                            <td>
+                                ${data.name}
+                            </td>
+                            <td>
+                              $ ${data.comfalemais}
+                            </td>
+                            <td>
+                               $ ${data.semfalemais}
+                            </td>
+                        </tr>
+                    `);
+                    $("#tcarculos").show();
+                }
+            });
         });
 
         $('#origem').on("change", function(){
