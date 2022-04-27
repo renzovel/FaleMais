@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Tempo de geração: 27/04/2022 às 18:55
+-- Tempo de geração: 27/04/2022 às 19:13
 -- Versão do servidor: 5.7.37
 -- Versão do PHP: 8.0.15
 
@@ -37,7 +37,7 @@ ELSE
 END IF$$
 
 CREATE DEFINER=`root`@`%` PROCEDURE `getPlanos` (IN `p_idPlano` INT)   IF p_idPlano>0 THEN
-SELECT * FROM planos WHERE idplanos=p_plano;
+SELECT * FROM planos WHERE idplanos=p_idPlano;
 ELSE
 SELECT * FROM planos;
 END IF$$
