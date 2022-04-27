@@ -12,9 +12,16 @@ if($_GET['url']!=null){
         include __DIR__.'/'.$arrayUrl[0].'/Models/'.$arrayUrl[1].'_model.php' ;
         include __DIR__.'/'.$arrayUrl[0].'/Controllers/'.$arrayUrl[1].'_controlle.php' ;
         $newClass=$arrayUrl[1];
-        try { 
+        try {
             $param=$arrayUrl[2]==null?[]:[$arrayUrl[2]];
-            $response=call_user_func_array(array(new $newClass, $_SERVER['REQUEST_METHOD']), $param);
+            $route="";
+            if (array_key_exists($newClass, ROUTE)) {
+                if(in_array($arrayUrl[2],ROUTE[$newClass])===true){
+                    $route=$arrayUrl[2];
+                    $param=$arrayUrl[3]==null?[]:[$arrayUrl[3]];
+                }
+            }            
+            $response=call_user_func_array(array(new $newClass, $_SERVER['REQUEST_METHOD'].$route), $param);
             echo json_encode(array('status'=>'success', 'data'=>$response));
         } catch (\Exception $e) {
             echo json_encode(array('status'=>'error', 'data'=>$e)); 
