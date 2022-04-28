@@ -226,7 +226,7 @@
             min: jQuery.validator.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}.")
         });
 
-
+        //validamos o tempo colocado pelo usuario para fazer o calculo
         var Form=$('form').validate({
             debug:false,
             rules:{
@@ -238,6 +238,7 @@
                 }
             }
         });
+        //se o origem esta errado mostramos uma mensagens
         $("#origem").change(function(){
             if ($(this).val()=="") {
                 $('#lblorigem').show();
@@ -245,6 +246,7 @@
                 $('#lblorigem').hide();
             }
         });
+        //se o destino esta errado mostramos uma mensagens
         $("#destino").change(function(){
             if ($(this).val()=="") {
                 $('#lbldestino').show();
@@ -252,6 +254,7 @@
                 $('#lbldestino').hide();
             }
         });
+        //se o plano esta errado mostramos uma mensagens
         $("#plano").change(function(){
             if ($(this).val()=="") {
                 $('#lblplanos').show();
@@ -259,8 +262,12 @@
                 $('#lblplanos').hide();
             }
         });
+        //se executa antes de enviar o formulario
         $('form').on('submit',function(e){
             e.preventDefault();
+            /*
+            * validamos de novo os select
+            */
             var validations=true;
             if ($("#origem").val()=="") {
                 validations=false;
@@ -280,6 +287,7 @@
             }else{
                 $('#lblplanos').hide();
             }
+            //se esta tudo bem enviamos o formulario
             if(Form.valid()&&validations){
                 $(".load-require").show();
                 $("#tcarculos").hide();
@@ -325,6 +333,7 @@
             }
         });
 
+        //consultamos todos os destimo com o nosso origem
         $('#origem').on("change", function(){
             var origem=$(this).val();
             if(origem!=""){
@@ -339,8 +348,6 @@
                         $('.load-destino').hide();              
                         $("#destino").removeAttr('disabled');
                         $('select').formSelect();
-                    }else{
-                        console.log(status);
                     }
                 });
             }else{
