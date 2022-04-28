@@ -46,6 +46,11 @@
         .load-destino, .load-require, #tcarculos{
             display: none;
         }
+        #lblorigem,
+        #lbldestino,
+        #lblplanos{
+            display: none;
+        }
         
         @media only screen and (max-width: 992px){
             nav .brand-logo{
@@ -98,7 +103,12 @@
                                 <option value="<?=$row->iddiscagem?>"><?=$row->ddd?> &nbsp;&nbsp; (<?=$row->regiao?>-<?=$row->uf?>)</option>
                                 <?php }?>
                             </select>
-                            <label>DDD de origem:</label>
+                            <label>DDD de origem:</label>   
+                            <div class="row">
+                                <div class="col s12">
+                                    <label id="lblorigem" class="red-text">Por favor, corrija este campo.</label>
+                                </div>
+                            </div>                         
                         </div> 
                         <div class="input-field col s12 m6">
                             <select id="destino" name="destino" disabled>
@@ -108,12 +118,16 @@
                             <div class="progress load-destino">
                                 <div class="indeterminate"></div>
                             </div>
+                            <div class="row">
+                                <div class="col s12">
+                                    <label id="lbldestino" class="red-text">Por favor, corrija este campo.</label>
+                                </div>
+                            </div> 
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <input id="minutos" type="number" name="minutos" required>
-                            <label for="minutos">Minutos da ligacao:</label>
+                            <input id="minutos" type="number" name="minutos" placeholder="Minutos da ligacao" required>
                         </div>
                     </div>
                     <div class="row">
@@ -126,6 +140,11 @@
                                 <?php }?>
                             </select>
                             <label>Planos Fale Mais:</label>
+                            <div class="row">
+                                <div class="col s12">
+                                    <label id="lblplanos" class="red-text">Por favor, corrija este campo.</label>
+                                </div>
+                            </div> 
                         </div>
                     </div>
                     <div class="row">
@@ -171,7 +190,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+                             
                         </tbody>
                     </table>
                 </div>
@@ -187,49 +206,123 @@
         //carrega o form style da materialize
         $('select').formSelect();
 
+        jQuery.extend(jQuery.validator.messages, {
+            required: "Este campo &eacute; requerido.",
+            remote: "Por favor, corrija este campo.",
+            email: "Por favor, forne&ccedil;a um endere&ccedil;o eletr&ocirc;nico v&aacute;lido.",
+            url: "Por favor, forne&ccedil;a uma URL v&aacute;lida.",
+            date: "Por favor, forne&ccedil;a uma data v&aacute;lida.",
+            dateISO: "Por favor, forne&ccedil;a uma data v&aacute;lida (ISO).",
+            number: "Por favor, forne&ccedil;a um n&uacute;mero v&aacute;lido.",
+            digits: "Por favor, forne&ccedil;a somente d&iacute;gitos.",
+            creditcard: "Por favor, forne&ccedil;a um cart&atilde;o de cr&eacute;dito v&aacute;lido.",
+            equalTo: "Por favor, forne&ccedil;a o mesmo valor novamente.",
+            accept: "Por favor, forne&ccedil;a um valor com uma extens&atilde;o v&aacute;lida.",
+            maxlength: jQuery.validator.format("Por favor, forne&ccedil;a n&atilde;o mais que {0} caracteres."),
+            minlength: jQuery.validator.format("Por favor, forne&ccedil;a ao menos {0} caracteres."),
+            rangelength: jQuery.validator.format("Por favor, forne&ccedil;a um valor entre {0} e {1} caracteres de comprimento."),
+            range: jQuery.validator.format("Por favor, forne&ccedil;a um valor entre {0} e {1}."),
+            max: jQuery.validator.format("Por favor, forne&ccedil;a um valor menor ou igual a {0}."),
+            min: jQuery.validator.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}.")
+        });
+
+
+        var Form=$('form').validate({
+            debug:false,
+            rules:{
+                minutos:{
+                    required:true,
+                    range:[1,10000],
+                    min:1,
+                    max:10000
+                }
+            }
+        });
+        $("#origem").change(function(){
+            if ($(this).val()=="") {
+                $('#lblorigem').show();
+            }else{
+                $('#lblorigem').hide();
+            }
+        });
+        $("#destino").change(function(){
+            if ($(this).val()=="") {
+                $('#lbldestino').show();
+            }else{
+                $('#lbldestino').hide();
+            }
+        });
+        $("#plano").change(function(){
+            if ($(this).val()=="") {
+                $('#lblplanos').show();
+            }else{
+                $('#lblplanos').hide();
+            }
+        });
         $('form').on('submit',function(e){
             e.preventDefault();
-            $(".load-require").show();
-            $("#tcarculos").hide();
-            $("#submit").attr('disabled', true);
-            var urlget='&idorigem='+$("#origem").val();
-            urlget+='&iddestino='+$("#destino").val();
-            urlget+='&minutos='+$("#minutos").val(); 
-            urlget+='&idplano='+$("#plano").val();           
-            $.get("<?=publicURL."/Api/Tarifas/Calcular/"?>"+urlget, function(response, status){
-                if(status=='success'){ 
-                    const data=JSON.parse(response).data[0];
-                    console.log(data);
-                    $(".load-require").hide();
-                    $("#submit").attr('disabled', false);
-                    $("#tcarculos>tbody").html(`
-                        <tr>
-                            <td>
-                                ${data.origem}
-                            </td>
-                            <td>
-                                ${data.destino}
-                            </td>
-                            <td>
-                               $ ${data.valorminuto}
-                            </td>
-                            <td>
-                                ${$("#minutos").val()}
-                            </td>
-                            <td>
-                                ${data.name}
-                            </td>
-                            <td>
-                              $ ${data.comfalemais}
-                            </td>
-                            <td>
-                               $ ${data.semfalemais}
-                            </td>
-                        </tr>
-                    `);
-                    $("#tcarculos").show();
-                }
-            });
+            var validations=true;
+            if ($("#origem").val()=="") {
+                validations=false;
+                $('#lblorigem').show();
+            }else{
+                $('#lblorigem').hide();
+            }
+            if ($("#destino").val()=="") {
+                validations=false;
+                $('#lbldestino').show();
+            }else{
+                $('#lbldestino').hide();
+            }
+            if ($("#plano").val()=="") {
+                validations=false;
+                $('#lblplanos').show();
+            }else{
+                $('#lblplanos').hide();
+            }
+            if(Form.valid()&&validations){
+                $(".load-require").show();
+                $("#tcarculos").hide();
+                $("#submit").attr('disabled', true);
+                var urlget='&idorigem='+$("#origem").val();
+                urlget+='&iddestino='+$("#destino").val();
+                urlget+='&minutos='+$("#minutos").val(); 
+                urlget+='&idplano='+$("#plano").val();           
+                $.get("<?=publicURL."/Api/Tarifas/Calcular/"?>"+urlget, function(response, status){
+                    if(status=='success'){ 
+                        const data=JSON.parse(response).data[0];
+                        console.log(data);
+                        $(".load-require").hide();
+                        $("#submit").attr('disabled', false);
+                        $("#tcarculos>tbody").html(`
+                            <tr>
+                                <td>
+                                    ${data.origem}
+                                </td>
+                                <td>
+                                    ${data.destino}
+                                </td>
+                                <td>
+                                $ ${data.valorminuto}
+                                </td>
+                                <td>
+                                    ${$("#minutos").val()}
+                                </td>
+                                <td>
+                                    ${data.name}
+                                </td>
+                                <td>
+                                $ ${data.comfalemais}
+                                </td>
+                                <td>
+                                $ ${data.semfalemais}
+                                </td>
+                            </tr>
+                        `);
+                        $("#tcarculos").show();
+                    }
+                });
+            }
         });
 
         $('#origem').on("change", function(){
