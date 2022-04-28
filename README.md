@@ -8,10 +8,12 @@ Follow the instructions to access the web system
 
 ### Requirements :
 - Install Docker.
-- Docker Compose.
+- Install Docker Compose.
 
 
-Run (Recommended)
+### Enter the root of the project and execute any of the commands FaleMais/ :
+
+Run (Recommended):
 ---
 
 ```
@@ -35,6 +37,14 @@ http://localhost:8080/
 
 http://localhost:8282/
 
+
+### The database is already loaded in docker, but it is available in the path:
+
+```
+Docker/Database/falemaisdb.sql
+```
+
+### database internal access
 
 ```
 Host internal: db
