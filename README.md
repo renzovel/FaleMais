@@ -68,3 +68,9 @@ docker-compose down
 ```
 
 > To stop all containers AND kill all volumes `docker-compose down --volumes`
+
+### References
+
+![Reponsive Layout](src/images/2022-04-28_20-54.png)
+![Full page](src/images/2022-04-28_21-02.png)
+![phpMyadmin](src/images/2022-04-28_21-03.png)
